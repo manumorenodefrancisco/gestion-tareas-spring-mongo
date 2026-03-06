@@ -34,7 +34,7 @@ public class TareaController {
     
     @PostMapping
     public Tarea createTarea(@RequestBody Tarea tarea) {
-        return tareaService.createWithAsyncProcessing(tarea);
+        return tareaService.crearTareaConHilo(tarea);
     }
     
     @DeleteMapping("/{id}")
