@@ -15,15 +15,17 @@ public class HiloRunnable implements Runnable {
     
     @Override
     public void run() {
+        System.out.println("Iniciando hilo para procesar tarea: " + tarea.getTitulo());
         try {
-            Thread.sleep(5000);
+            System.out.println("Esperando 10s para simular tarea...");
+            Thread.sleep(10000);
             tarea.setEstado(Tarea.Estado.COMPLETADA);
             tarea.setfechacompletada(java.time.Instant.now());
             tareaRepository.save(tarea);
-            System.out.println("Task completed: " + tarea.getTitulo());
+            System.out.println("Tarea completada exitosamente: " + tarea.getTitulo());
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            System.err.println("Error processing task: " + e.getMessage());
+            System.err.println("Error procesando tarea: " + e.getMessage());
         }
     }
 }

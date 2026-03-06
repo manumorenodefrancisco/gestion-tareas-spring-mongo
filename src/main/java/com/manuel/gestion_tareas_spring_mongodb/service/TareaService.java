@@ -27,19 +27,16 @@ public class TareaService {
     }
 
     public Tarea crearTareaConHilo(Tarea tarea) {
+        System.out.println("Guardando tarea en base de datos...");
         Tarea nuevaTarea = tareaRepository.save(tarea);
-        procesarTareaConHilo(nuevaTarea);
+        HiloRunnable hiloRunnable = new HiloRunnable(nuevaTarea, tareaRepository);
+        Thread hilo = new Thread(hiloRunnable);
+        hilo.start();
         return nuevaTarea;
     }
 
     public void deleteById(String id) {
         tareaRepository.deleteById(id);
-    }
-    
-    public void procesarTareaConHilo(Tarea tarea) {
-        HiloRunnable hiloRunnable = new HiloRunnable(tarea, tareaRepository);
-        Thread hilo = new Thread(hiloRunnable);
-        hilo.start();
     }
 
 }

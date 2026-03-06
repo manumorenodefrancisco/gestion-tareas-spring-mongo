@@ -22,24 +22,53 @@ public class TareaController {
     
     @GetMapping
     public List<Tarea> getAllTareas() {
-        return tareaService.findAll();
+        System.out.println("Obteniendo todas las tareas");
+        List<Tarea> tareas = tareaService.findAll();
+        System.out.println("Se encontraron " + tareas.size() + " tareas");
+        return tareas;
     }
     
     @GetMapping("/{id}")
     public ResponseEntity<Tarea> getTareaById(@PathVariable String id) {
         Optional<Tarea> tarea = tareaService.findById(id);
-        return tarea.map(ResponseEntity::ok)
-                   .orElse(ResponseEntity.notFound().build());
+        return tarea.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
     
     @PostMapping
     public Tarea createTarea(@RequestBody Tarea tarea) {
-        return tareaService.crearTareaConHilo(tarea);
+        System.out.println("Creando nueva tarea: " + tarea.getTitulo());
+        Tarea nuevaTarea = tareaService.crearTareaConHilo(tarea);
+        System.out.println("Tarea creada con id: " + nuevaTarea.getId());
+        return nuevaTarea;
+    }
+    
+    @PutMapping("/{id}")
+    public ResponseEntity<Tarea> updateTarea(@PathVariable String id, @RequestBody Tarea tarea) {
+        Optional<Tarea> tareaExistente = tareaService.findById(id);
+        if (!tareaExistente.isEmpty()) {
+            Tarea tareaActual = tareaExistente.get();
+
+            if (tarea.getTitulo() != null) {
+                tareaActual.setTitulo(tarea.getTitulo());
+            }
+            if (tarea.getDescripcion() != null) {
+                tareaActual.setDescripcion(tarea.getDescripcion());
+            }
+            if (tarea.getEstado() != null) {
+                tareaActual.setEstado(tarea.getEstado());
+            }
+
+            return ResponseEntity.ok(tareaService.save(tareaActual));
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
     
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTarea(@PathVariable String id) {
+        System.out.println("Eliminando tarea con id: " + id);
         tareaService.deleteById(id);
+        System.out.println("Tarea eliminada exitosamente");
         return ResponseEntity.noContent().build();
     }
     
